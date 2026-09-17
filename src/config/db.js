@@ -21,5 +21,3 @@ export const getDB = () => {
     }
     return db;
 }
-
-export const usersCollection = () => getDB().collection("users");
