@@ -1,2 +1,5 @@
+node_modules/
 .env
-./node_modules
+# Firebase service account private key - must never be committed
+firebase-adminsdk*.json
+src/firebase-admin/

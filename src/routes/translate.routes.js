@@ -1,14 +1,7 @@
 import express from "express";
-import { Ollama } from "ollama";
+import { translateText } from "../utils/translate.js";
 
 const router = express.Router();
-
-const ollama = new Ollama({
-  host: "https://ollama.com",
-  headers: {
-    Authorization: `Bearer ${process.env.OLLAMA_API_KEY}`,
-  },
-});
 
 router.post("/", async (req, res) => {
   const { message, targetLanguage = "English" } = req.body;
@@ -22,36 +15,23 @@ router.post("/", async (req, res) => {
     );
   }
 
-  try {
-    const response = await ollama.generate({
-      model: "gemma4:cloud",
-      prompt: 
-              `Translate this message into ${targetLanguage}.
-              Return only the translated message.
-              Do not explain anything.
-              Do not add quotes.
+  const translation = await translateText(message, targetLanguage);
 
-              Message:
-              ${message}`,
-    });
-    
-    res.json(
-      {
-        success: true,
-        translation: response.response.trim(),
-      }
-    );
-
-  } catch (error) {
-    console.error("Ollama Cloud error:", error);
-
-    res.status(500).json(
+  if (!translation) {
+    return res.status(500).json(
       {
         success: false,
         message: "Translation failed",
       }
     );
   }
+
+  res.json(
+    {
+      success: true,
+      translation,
+    }
+  );
 });
 
 export default router;
