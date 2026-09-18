@@ -56,7 +56,8 @@ router.post("/signup", async (req, res) => {
       message: "Internal server error" 
     });
   }
-});
+});  
+
 
 router.get("/role", async (req, res) => {
   try {
